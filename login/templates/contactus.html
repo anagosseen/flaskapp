@@ -1,0 +1,78 @@
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <title> Contact Us </title>
+        <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+  </head>
+  <body>
+
+    <!-- Main form -->
+  <div class="card">
+    <div class="card-body">
+    <h2>Contact Us</h2>
+    <form action="" method="POST">
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input type="email" class="form-control" id="email"  placeholder="Enter email">
+        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+      </div>
+
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="name" class="form-control" id="name"  placeholder="Your name">
+      </div>  
+
+      <div class="form-group">
+        <label for="name">Message</label>
+        <input type="name" class="form-control" id="message"  placeholder="Tell us something">
+      </div>  
+      <h4 id="response"></h4>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const form = document.querySelector('form');
+      const submitResponse = document.querySelector('#response');
+      const formURL = 'https://tse3169vxf.execute-api.us-east-1.amazonaws.com/Prod/submitForm';  // ENTER YOUR API ENDPOINT HERE
+
+      form.onsubmit = e => {
+        e.preventDefault();
+
+        // Capture the form data
+        let data = {};
+        Array.from(form).map(input => (data[input.id] = input.value));
+        console.log('Sending: ', JSON.stringify(data));
+
+        // Create the AJAX request
+        var xhr = new XMLHttpRequest();
+        xhr.open(form.method, formURL, true);
+        xhr.setRequestHeader('Accept', 'application/json; charset=utf-8');
+        xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
+        // Send the collected data as JSON
+        xhr.send(JSON.stringify(data));
+
+        xhr.onloadend = response => {
+          if (response.target.status === 200) {
+            form.reset();
+            submitResponse.innerHTML = 'Form submitted. Success!';
+          } else {
+            submitResponse.innerHTML = 'Error! Please try again.';
+            console.error(JSON.parse(response.target.response).message);
+          }
+        };    
+      };
+    })();
+  </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+  </body>
+</html>
